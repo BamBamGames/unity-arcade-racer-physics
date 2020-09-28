@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/circle based turning/v16
+/Library
+/Logs
+/.vs/circle based turning/config
+/obj/Debug
