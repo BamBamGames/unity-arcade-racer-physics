@@ -10,6 +10,8 @@ namespace ModularCar
 		private Rigidbody rb;
 
 		private float radius;
+		private float maxSuspensionLength;
+
 		public GameObject mesh;
 		private TrailRenderer skid;
 		private Vector3 hitPosition;
@@ -22,6 +24,9 @@ namespace ModularCar
 			control = this.GetComponentInParent<CarControllerV3>();
 			rb = control.rb;
 			radius = control.wheelRadius;
+
+			if (control.suspension != null)
+				maxSuspensionLength = control.suspension.maxSuspension;
 
 			skid = GetComponentInChildren<TrailRenderer>();
 			mesh = transform.Find("Mesh").gameObject;
@@ -48,7 +53,7 @@ namespace ModularCar
 
 		public bool IsGrounded()
 		{
-			if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, radius))
+			if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, radius + maxSuspensionLength))
 			{
 				hitPosition = hit.point + (.05f * transform.up);
 				return true;

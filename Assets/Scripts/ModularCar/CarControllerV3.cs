@@ -32,6 +32,11 @@ namespace ModularCar
 		//public List<GameObject> wheelMeshs;
 		public GameObject bodyMesh;
 		public Rigidbody rb;
+		public Suspension suspension;
+		public Friction friction;
+		public CameraController cameraController;
+		public Vector3 something;
+		public Quaternion somethingElse;
 
 		void Awake()
 		{
@@ -39,7 +44,8 @@ namespace ModularCar
 			visualMesh = transform.Find("Mesh").gameObject;
 			var com = transform.Find("CenterOfMass") as Transform;
 			rb.centerOfMass = com.localPosition;
-
+			//rb.inertiaTensor = new Vector3(5000, 5000, 1000);
+			
 			var wheelObjects = transform.GetComponentsInChildren<Wheel>();
 
 			foreach (var wheel in wheelObjects)
@@ -47,23 +53,18 @@ namespace ModularCar
 				wheels.Add(wheel);
 			}
 
-			//var mesh = transform.Find("Mesh");
-			//var car = mesh.transform.Find("Car");
-			//wheels.Add(car.transform.Find("FLWheel"));
-			//wheels.Add(car.transform.Find("FRWheel"));
-			//wheels.Add(car.transform.Find("BLWheel"));
-			//wheels.Add(car.transform.Find("BRWheel"));
+			cameraController = GameObject.Find("CarCamera").GetComponent<CameraController>();
 
-			//foreach (var wheel in wheels)
-			//{
-			//	wheelMeshs.Add(wheel.gameObject.transform.Find("Mesh").gameObject);
-			//}
+			suspension = transform.GetComponent<Suspension>();
+			friction = transform.GetComponent<Friction>(); ;
+
+			something = rb.inertiaTensor;
+			somethingElse = rb.inertiaTensorRotation;
 
 			Debug.Assert(rb != null); //must be set
 			Debug.Assert(visualMesh != null); //must be set
 			//Debug.Assert(bodyMesh != null); //must be set
 			Debug.Assert(wheels != null); //must be set
-			//Debug.Assert(wheelMeshs != null); //must be set
 		}
 
 		void FixedUpdate()
@@ -72,6 +73,7 @@ namespace ModularCar
 
 			WheelPower();
 			Downforce();
+			something = rb.inertiaTensor;
 
 			//Debug stuff
 			if (debug)
@@ -110,7 +112,7 @@ namespace ModularCar
 		
 		private void Downforce()
 		{
-			rb.AddForce(-transform.up * downforce * currentSpeed * wheelPower);
+			rb.AddForce(-transform.up * downforce * currentSpeed);
 		}
 
 		private void Grip()

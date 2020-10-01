@@ -8,21 +8,17 @@ namespace ModularCar
 	{
 		private CarControllerV3 control;
 		private Rigidbody rb;
-
-		public bool debug;
 		
 		public bool springsInitialized;
 		private Spring[] springs;
-		public float mass = 1;
-		private float radius;
+
+		public float radius;
+		
 		public float maxSuspension = .05f;
 		public float springy = 30000;
-		public float damper = 3000;
+		public float damper = 6000;
 
-		public float springFLForce;
-		public float springFRForce;
-		public float springBLForce;
-		public float springBRForce;
+		public Vector3 bounce;
 
 		private void Start()
 		{
@@ -30,20 +26,19 @@ namespace ModularCar
 			rb = control.rb;
 			radius = control.wheelRadius;
 
-			InitializeSprings(control.wheels.ToArray());
-
 			Debug.Assert(control != null, "Must have a controller");
 		}
 
 		private void FixedUpdate()
 		{
-			if (springsInitialized)
+			if (!springsInitialized)
+				InitializeSprings(control.wheels.ToArray());
+
+			foreach (var spring in springs)
 			{
-				foreach (var spring in springs)
-				{
-					GetGround(spring);
-				}
+				GetGround(spring);
 			}
+
 		}
 
 		public void InitializeSprings(Wheel[] wheels)
@@ -65,14 +60,15 @@ namespace ModularCar
 
 		void GetGround(Spring spring)
 		{
-			Vector3 downwards = spring.transform.TransformDirection(-Vector3.up);
+			Vector3 up = spring.transform.TransformDirection(Vector3.up);
 			RaycastHit hit;
 
 			// down = local downwards direction
-			Vector3 down = spring.transform.TransformDirection(Vector3.down);
+			//Vector3 down = spring.transform.TransformDirection(Vector3.down);
 
-			if (Physics.Raycast(spring.transform.position, downwards, out hit, radius + maxSuspension))
+			if (Physics.Raycast(spring.transform.position, -up, out hit, radius + maxSuspension))
 			{
+				
 				// the velocity at point of contact
 				Vector3 velocityAtTouch = rb.GetPointVelocity(hit.point);
 
@@ -82,9 +78,9 @@ namespace ModularCar
 				compression = -compression + 1;
 
 				// final force
-				Vector3 force = -downwards * compression * springy;
-				// velocity at point of contact transformed into local space
+				Vector3 force = up * compression * springy;
 
+				// velocity at point of contact transformed into local space
 				Vector3 t = spring.transform.InverseTransformDirection(velocityAtTouch);
 
 				// local x and z directions = 0
@@ -94,15 +90,17 @@ namespace ModularCar
 				Vector3 damping = spring.transform.TransformDirection(t) * -damper;
 				Vector3 finalForce = force + damping;
 
-				rb.AddForceAtPosition(finalForce, hit.point);
+				bounce = finalForce;
 
-				spring.mesh.transform.position = spring.transform.position + (spring.transform.right * spring.offsetVector.x) + (spring.transform.forward * spring.offsetVector.z) + (down * (hit.distance - radius));
+				rb.AddForceAtPosition(finalForce, hit.point);
+				
+				spring.mesh.transform.position = spring.transform.position + (spring.transform.right * spring.offsetVector.x) + (spring.transform.forward * spring.offsetVector.z) + (-up * (hit.distance - radius));
 				spring.mesh.transform.Rotate(0, 0, Mathf.Rad2Deg * (-control.currentSpeed / radius) * Time.deltaTime, Space.Self);
 
 			}
 			else
 			{
-				spring.mesh.transform.position = spring.transform.position + (spring.transform.right * spring.offsetVector.x) + (spring.transform.forward * spring.offsetVector.z) + (down * maxSuspension);
+				spring.mesh.transform.position = spring.transform.position + (spring.transform.right * spring.offsetVector.x) + (spring.transform.forward * spring.offsetVector.z) + (-up * maxSuspension);
 				spring.mesh.transform.Rotate(0, 0, Mathf.Rad2Deg * (-control.currentSpeed / radius) * Time.deltaTime, Space.Self);
 			}
 
@@ -110,7 +108,7 @@ namespace ModularCar
 
 	}
 
-	public struct Spring
+	public class Spring
 	{
 		public Transform transform;
 		public GameObject mesh;

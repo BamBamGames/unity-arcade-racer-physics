@@ -64,6 +64,16 @@ namespace ModularCar
 		private float _wheelPower = 1;
 		private float _driftChangeSpeed;
 
+
+		public float _dampFriction = 0;
+		private float _dampFrictionTarget = 0;
+		private float _dampFrictionVelocity = 0;
+
+		public float _dampCameraRotation = 0;
+		private float _dampCameraRotationTarget = 0;
+		private float _dampCameraRotationVelocity = 0;
+
+
 		private void Start()
 		{
 			control = this.GetComponent<CarControllerV3>();
@@ -104,6 +114,8 @@ namespace ModularCar
 		private void Turn()
 		{
 			horizontalInput = (input.horizontal * _dampDriftStrength) + _dampDriftOffset; //add _driftOffset to horizontal input 
+			control.friction.sidewaysTraction = _dampFriction;
+			control.cameraController.rotationDamping = _dampCameraRotation;
 
 			var steerSpeed = steeringCurve.Evaluate(control.currentSpeed);
 			turningPower = horizontalInput * (Mathf.Clamp(control.currentSpeed, -fullTurnSpeed, fullTurnSpeed) / fullTurnSpeed) * _wheelPower;
@@ -111,12 +123,12 @@ namespace ModularCar
 			RaycastHit hit;
 			Vector3 down = -steeringTransform.transform.up;
 
-			if (Physics.Raycast(steeringTransform.transform.position, down, out hit, 1f))
+			if (Physics.Raycast(steeringTransform.transform.position, down, out hit, control.wheelRadius))
 			{
 				var x = Vector3.Cross(rb.transform.forward, hit.point - steeringTransform.transform.position);
 				var something = Vector3.Reflect(x, hit.normal).normalized;
 
-				Debug.DrawLine(steeringTransform.transform.position, hit.point);
+				//Debug.DrawLine(steeringTransform.transform.position, hit.point);
 				Debug.DrawRay(steeringTransform.transform.position, 5 * something);
 				Debug.DrawRay(steeringTransform.transform.position, steeringTransform.transform.right, Color.blue);
 				something = steeringTransform.transform.right;
@@ -128,10 +140,12 @@ namespace ModularCar
 
 				//Rotate the car mesh so its 'drifting' lol
 				var visualTurnAngle = Quaternion.AngleAxis(Mathf.Rad2Deg * ((input.horizontal * (_dampDriftStrength * driftStrengthVisualMultipler)) + (_dampDriftOffset * visualDriftOffsetVisualMultipler)) * Time.deltaTime * _dampVisualHorizontalMultipler, control.visualMesh.transform.up);
-				control.visualMesh.transform.localRotation = visualTurnAngle;
+				//control.visualMesh.transform.localRotation = visualTurnAngle;
 
 				//Damp stuff so the velocity changes all smoothly transition
 				_dampDriftOffset = Mathf.SmoothDamp(_dampDriftOffset, _dampDriftOffsetTarget, ref _dampDriftOffsetVelocity, _driftChangeSpeed);
+				_dampFriction = Mathf.SmoothDamp(_dampFriction, _dampFrictionTarget, ref _dampFrictionVelocity, _driftChangeSpeed);
+				_dampCameraRotation = Mathf.SmoothDamp(_dampCameraRotation, _dampCameraRotationTarget, ref _dampCameraRotationVelocity, _driftChangeSpeed);
 				_dampDriftStrength = Mathf.SmoothDamp(_dampDriftStrength, _dampDriftStrengthTarget, ref _dampDriftStrengthVelocity, _driftChangeSpeed);
 				_dampVisualHorizontalMultipler = Mathf.SmoothDamp(_dampVisualHorizontalMultipler, _dampVisualHorizontalMultiplerTarget, ref _dampVisualHorizontalMultiplerVelocity, _driftChangeSpeed);
 			}
@@ -156,6 +170,8 @@ namespace ModularCar
 
 				_dampVisualHorizontalMultiplerTarget = 1;
 				_dampDriftStrengthTarget = driftStrength;
+				_dampFrictionTarget = 1;
+				_dampCameraRotationTarget = 2;
 				//_limitedHorizontalChangeRate = limitedHorizontalChangeRateDrift;
 			}
 
@@ -197,6 +213,9 @@ namespace ModularCar
 			_dampDriftOffsetTarget = 0;
 			_dampDriftStrengthTarget = 1;
 			_dampVisualHorizontalMultiplerTarget = 0;
+			_dampFrictionTarget = 15;
+			_dampCameraRotationTarget = 8;
+
 			input.SetChangeRate(limitedHorizontalChangeRate);
 		}
 	}
