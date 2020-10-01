@@ -123,17 +123,18 @@ namespace ModularCar
 
 				//Steer
 				rb.AddForceAtPosition(turningPower * something * steerPower * control.wheelPower, steeringTransform.position, forceMode);
+
+				rb.AddTorque(-new Vector3(0.0f, rb.angularVelocity.y, 0.0f) * angularTraction * control.wheelPower, ForceMode.Acceleration);
+
+				//Rotate the car mesh so its 'drifting' lol
+				var visualTurnAngle = Quaternion.AngleAxis(Mathf.Rad2Deg * ((input.horizontal * (_dampDriftStrength * driftStrengthVisualMultipler)) + (_dampDriftOffset * visualDriftOffsetVisualMultipler)) * Time.deltaTime * _dampVisualHorizontalMultipler, control.visualMesh.transform.up);
+				control.visualMesh.transform.localRotation = visualTurnAngle;
+
+				//Damp stuff so the velocity changes all smoothly transition
+				_dampDriftOffset = Mathf.SmoothDamp(_dampDriftOffset, _dampDriftOffsetTarget, ref _dampDriftOffsetVelocity, _driftChangeSpeed);
+				_dampDriftStrength = Mathf.SmoothDamp(_dampDriftStrength, _dampDriftStrengthTarget, ref _dampDriftStrengthVelocity, _driftChangeSpeed);
+				_dampVisualHorizontalMultipler = Mathf.SmoothDamp(_dampVisualHorizontalMultipler, _dampVisualHorizontalMultiplerTarget, ref _dampVisualHorizontalMultiplerVelocity, _driftChangeSpeed);
 			}
-			rb.AddTorque(-new Vector3(0.0f, rb.angularVelocity.y, 0.0f) * angularTraction * control.wheelPower, ForceMode.Acceleration);
-
-			//Rotate the car mesh so its 'drifting' lol
-			var visualTurnAngle = Quaternion.AngleAxis(Mathf.Rad2Deg * ((input.horizontal * (_dampDriftStrength * driftStrengthVisualMultipler)) + (_dampDriftOffset * visualDriftOffsetVisualMultipler)) * Time.deltaTime * _dampVisualHorizontalMultipler, control.visualMesh.transform.up);
-			control.visualMesh.transform.localRotation = visualTurnAngle;
-
-			//Damp stuff so the velocity changes all smoothly transition
-			_dampDriftOffset = Mathf.SmoothDamp(_dampDriftOffset, _dampDriftOffsetTarget, ref _dampDriftOffsetVelocity, _driftChangeSpeed);
-			_dampDriftStrength = Mathf.SmoothDamp(_dampDriftStrength, _dampDriftStrengthTarget, ref _dampDriftStrengthVelocity, _driftChangeSpeed);
-			_dampVisualHorizontalMultipler = Mathf.SmoothDamp(_dampVisualHorizontalMultipler, _dampVisualHorizontalMultiplerTarget, ref _dampVisualHorizontalMultiplerVelocity, _driftChangeSpeed);
 		}
 
 		private void Drift()

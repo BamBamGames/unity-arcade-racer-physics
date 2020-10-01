@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ModularCar
@@ -94,30 +95,32 @@ namespace ModularCar
 
 				rb.AddForceAtPosition(finalForce, hit.point);
 
-				spring.mesh.transform.position = spring.transform.position + (down * (hit.distance - radius));
+				spring.mesh.transform.position = spring.transform.position + (spring.transform.right * spring.offsetVector.x) + (spring.transform.forward * spring.offsetVector.z) + (down * (hit.distance - radius));
 				spring.mesh.transform.Rotate(0, 0, Mathf.Rad2Deg * (-control.currentSpeed / radius) * Time.deltaTime, Space.Self);
-				//if (graphic) graphic.position = transform.position + (down * (hit.distance - radius));
 
 			}
 			else
 			{
-				//if (graphic) graphic.position = transform.position + (down * maxSuspension);
+				spring.mesh.transform.position = spring.transform.position + (spring.transform.right * spring.offsetVector.x) + (spring.transform.forward * spring.offsetVector.z) + (down * maxSuspension);
+				spring.mesh.transform.Rotate(0, 0, Mathf.Rad2Deg * (-control.currentSpeed / radius) * Time.deltaTime, Space.Self);
 			}
 
 		}
 
 	}
 
-
 	public struct Spring
 	{
 		public Transform transform;
 		public GameObject mesh;
+		//I use this offset to calculate where the mesh is relative to the spring, so I can position the mesh correctly in the future
+		public Vector3 offsetVector;
 
 		public Spring(Transform spring, GameObject wheelMesh)
 		{
 			this.transform = spring;
 			this.mesh = wheelMesh;
+			offsetVector = mesh.transform.position - transform.position; 
 		}
 	}
 }

@@ -145,7 +145,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 25422871}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.39, z: 0.45}
+  m_LocalPosition: {x: 0, y: -0.39, z: 0.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1757849829}
@@ -1001,8 +1001,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1456133659}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.6268, y: 1, z: 4.491406}
+  m_LocalPosition: {x: 0, y: -0.17, z: 0.01}
+  m_LocalScale: {x: 1.6268, y: 0.7185938, z: 4.491406}
   m_Children: []
   m_Father: {fileID: 714520868}
   m_RootOrder: 1
@@ -1130,7 +1130,7 @@ GameObject:
   - component: {fileID: 1757849830}
   - component: {fileID: 1757849831}
   m_Layer: 0
-  m_Name: CarV2
+  m_Name: CarV3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1151,7 +1151,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!4 &1757849829
 Transform:
   m_ObjectHideFlags: 0
@@ -1182,11 +1182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47c96b0ed378d1042939b4dd55273e84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  control: {fileID: 0}
-  rb: {fileID: 0}
-  input: {fileID: 0}
-  steeringTransform: {fileID: 0}
-  debug: 0
+  debug: 1
   springsInitialized: 0
   mass: 1
   radius: 0.37
@@ -1209,10 +1205,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d072be4dc51342449efa6660670e4f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  control: {fileID: 0}
-  rb: {fileID: 0}
-  input: {fileID: 0}
-  steeringTransform: {fileID: 0}
   sidewaysTraction: 15
   rollingResistance: 0.4
 --- !u!114 &1757849833
@@ -1266,10 +1258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 823b7717c40a1be45a632178582d3737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  control: {fileID: 0}
-  rb: {fileID: 0}
-  input: {fileID: 0}
-  steeringTransform: {fileID: 0}
   state: 0
   steeringCurve:
     serializedVersion: 2
@@ -1329,10 +1317,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b244d86d7603a2248996f8d0b198f693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  control: {fileID: 0}
-  rb: {fileID: 0}
-  input: {fileID: 0}
-  steeringTransform: {fileID: 0}
   accelerationCurve:
     serializedVersion: 2
     m_Curve:
@@ -1593,7 +1577,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1949278745}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.561, z: 1.972}
+  m_LocalPosition: {x: 0, y: -0.413, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1757849829}
