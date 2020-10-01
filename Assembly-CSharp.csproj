@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\ModularCar\Friction.cs" />
     <Compile Include="Assets\Scripts\ModularCar\InputController.cs" />
     <Compile Include="Assets\Scripts\ModularCar\Suspension.cs" />
+    <Compile Include="Assets\Scripts\ModularCar\Wheel.cs" />
     <Compile Include="Assets\Scripts\old\CarController.cs" />
     <Compile Include="Assets\Scripts\old\CarControllerV2.cs" />
     <Compile Include="Assets\Scripts\old\CarWheel.cs" />

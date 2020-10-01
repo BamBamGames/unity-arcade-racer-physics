@@ -14,7 +14,7 @@ namespace ModularCar
 		public bool springsInitialized;
 		private Spring[] springs;
 		public float mass = 1;
-		public float radius = .4f;
+		private float radius;
 		public float maxSuspension = .05f;
 		public float springy = 30000;
 		public float damper = 3000;
@@ -28,8 +28,9 @@ namespace ModularCar
 		{
 			control = this.GetComponent<CarControllerV3>();
 			rb = control.rb;
+			radius = control.wheelRadius;
 
-			InitializeSprings(control.wheels.ToArray(), control.wheelMeshs.ToArray());
+			InitializeSprings(control.wheels.ToArray());
 
 			Debug.Assert(control != null, "Must have a controller");
 		}
@@ -45,7 +46,7 @@ namespace ModularCar
 			}
 		}
 
-		public void InitializeSprings(Transform[] wheels, GameObject[] wheelMeshs)
+		public void InitializeSprings(Wheel[] wheels)
 		{
 			if (springsInitialized)
 			{
@@ -56,7 +57,7 @@ namespace ModularCar
 
 			for (int i = 0; i < wheels.Length; i++)
 			{
-				springs[i] = new Spring(wheels[i], wheelMeshs[i]);
+				springs[i] = new Spring(wheels[i].transform, wheels[i].mesh);
 			}
 			
 			springsInitialized = true;

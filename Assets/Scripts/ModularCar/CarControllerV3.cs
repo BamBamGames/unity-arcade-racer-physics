@@ -28,8 +28,8 @@ namespace ModularCar
 
 		//Gameobjects
 		public GameObject visualMesh;
-		public List<Transform> wheels;
-		public List<GameObject> wheelMeshs;
+		public List<Wheel> wheels;
+		//public List<GameObject> wheelMeshs;
 		public GameObject bodyMesh;
 		public Rigidbody rb;
 
@@ -40,24 +40,30 @@ namespace ModularCar
 			var com = transform.Find("CenterOfMass") as Transform;
 			rb.centerOfMass = com.localPosition;
 
-			var mesh = transform.Find("Mesh");
-			var wheel = mesh.transform.Find("Wheels");
-			wheels.Add(wheel.transform.Find("FL"));
-			wheels.Add(wheel.transform.Find("FR"));
-			wheels.Add(wheel.transform.Find("BL"));
-			wheels.Add(wheel.transform.Find("BR"));
+			var wheelObjects = transform.GetComponentsInChildren<Wheel>();
 
-			var car = mesh.transform.Find("Car");
-			wheelMeshs.Add(car.transform.Find("FLWheel").gameObject);
-			wheelMeshs.Add(car.transform.Find("FRWheel").gameObject);
-			wheelMeshs.Add(car.transform.Find("BLWheel").gameObject);
-			wheelMeshs.Add(car.transform.Find("BRWheel").gameObject);
+			foreach (var wheel in wheelObjects)
+			{
+				wheels.Add(wheel);
+			}
+
+			//var mesh = transform.Find("Mesh");
+			//var car = mesh.transform.Find("Car");
+			//wheels.Add(car.transform.Find("FLWheel"));
+			//wheels.Add(car.transform.Find("FRWheel"));
+			//wheels.Add(car.transform.Find("BLWheel"));
+			//wheels.Add(car.transform.Find("BRWheel"));
+
+			//foreach (var wheel in wheels)
+			//{
+			//	wheelMeshs.Add(wheel.gameObject.transform.Find("Mesh").gameObject);
+			//}
 
 			Debug.Assert(rb != null); //must be set
 			Debug.Assert(visualMesh != null); //must be set
 			//Debug.Assert(bodyMesh != null); //must be set
-			//Debug.Assert(wheels != null); //must be set
-			Debug.Assert(wheelMeshs != null); //must be set
+			Debug.Assert(wheels != null); //must be set
+			//Debug.Assert(wheelMeshs != null); //must be set
 		}
 
 		void FixedUpdate()
@@ -84,16 +90,21 @@ namespace ModularCar
 				if (debug)
 					Debug.DrawRay(wheels[i].transform.position + (rb.velocity * Time.deltaTime), -wheels[i].transform.up * wheelRadius, Color.green);
 
-				if (Physics.Raycast(wheels[i].transform.position + (rb.velocity * Time.deltaTime), -wheels[i].transform.up, out RaycastHit hit, wheelRadius))
+				if (wheels[i].IsGrounded())
 				{
-					if (i < 2)
-					{
-						//var turnAngle = Quaternion.AngleAxis(Mathf.Rad2Deg * _horizontal * (Mathf.Clamp(currentSpeed, 0, fullTurnSpeed) / fullTurnSpeed) * steeringCurve.Evaluate(currentSpeed) * visualWheelSteerRotation * Time.deltaTime, visualMesh.transform.up);
-						//wheelMeshs[i].transform.localRotation = turnAngle;
-					}
-					//wheelMeshs[i].transform.Rotate(0, 0, Mathf.Rad2Deg * (-currentSpeed / wheelRadius) * Time.deltaTime, Space.Self);
 					wheelPower += .25f;
 				}
+
+				//if (Physics.Raycast(wheels[i].transform.position + (rb.velocity * Time.deltaTime), -wheels[i].transform.up, out RaycastHit hit, wheelRadius))
+				//{
+				//	if (i < 2)
+				//	{
+				//		//var turnAngle = Quaternion.AngleAxis(Mathf.Rad2Deg * _horizontal * (Mathf.Clamp(currentSpeed, 0, fullTurnSpeed) / fullTurnSpeed) * steeringCurve.Evaluate(currentSpeed) * visualWheelSteerRotation * Time.deltaTime, visualMesh.transform.up);
+				//		//wheelMeshs[i].transform.localRotation = turnAngle;
+				//	}
+				//	//wheelMeshs[i].transform.Rotate(0, 0, Mathf.Rad2Deg * (-currentSpeed / wheelRadius) * Time.deltaTime, Space.Self);
+				//	wheelPower += .25f;
+				//}
 			}
 		}
 		

@@ -27,8 +27,8 @@ namespace ModularCar
 		private void FixedUpdate()
 		{
 			Vector3 localVelocity = target.InverseTransformDirection(rb.velocity);
-			var carPosition = car.transform.position + (rb.velocity * Time.deltaTime);
-			var targetPosition = target.position + (rb.velocity * Time.deltaTime);
+			var carPosition = car.transform.position;
+			var targetPosition = target.position;
 
 			if (localVelocity.z < -0.5f)
 				rotationVector = target.eulerAngles.y + 180;
