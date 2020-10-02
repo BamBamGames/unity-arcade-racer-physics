@@ -108,7 +108,7 @@ namespace ModularCar
 
 	}
 
-	public class Spring
+	public struct Spring
 	{
 		public Transform transform;
 		public GameObject mesh;

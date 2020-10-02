@@ -19,6 +19,8 @@ namespace ModularCar
 		private float rotationVector;
 		private Rigidbody rb;
 
+		private Damper dampCameraRotation = new Damper();
+
 		private void Start()
 		{
 			rb = car.GetComponent<Rigidbody>();
@@ -45,7 +47,7 @@ namespace ModularCar
 			float myAngle = transform.eulerAngles.y;
 			float myHeight = transform.position.y;
 
-			myAngle = Mathf.LerpAngle(myAngle, wantedAngle, rotationDamping * Time.deltaTime);
+			myAngle = Mathf.LerpAngle(myAngle, wantedAngle, dampCameraRotation.value * Time.deltaTime);
 			myHeight = Mathf.LerpAngle(myHeight, wantedHeight, heighDamping * Time.deltaTime);
 
 			Quaternion currentRotation = Quaternion.Euler(0, myAngle, 0);
@@ -58,6 +60,14 @@ namespace ModularCar
 			transform.position = temp;
 
 			transform.LookAt(targetPosition);
+
+			dampCameraRotation.Damp();
+		}
+
+		public void ChangeDampTargetAndSpeed(float target, float changeSpeed)
+		{
+			dampCameraRotation.target = target;
+			dampCameraRotation.speedOfChange = changeSpeed;
 		}
 	}
 }

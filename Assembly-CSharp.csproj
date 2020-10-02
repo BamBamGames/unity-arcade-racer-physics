@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\ModularCar\CameraController.cs" />
     <Compile Include="Assets\Scripts\ModularCar\CarControllerV3.cs" />
+    <Compile Include="Assets\Scripts\ModularCar\Drift.cs" />
     <Compile Include="Assets\Scripts\ModularCar\ForcePower.cs" />
     <Compile Include="Assets\Scripts\ModularCar\ForceSteering.cs" />
     <Compile Include="Assets\Scripts\ModularCar\Friction.cs" />

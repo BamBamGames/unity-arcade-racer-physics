@@ -14,6 +14,7 @@ namespace ModularCar
 		public float horizontal { get; private set; }
 		public float rawHorizontal { get; private set; }
 		public bool driftInput { get; private set; }
+		public float horizontalInputDriftAdjusted { get; set; }
 
 		void Start()
 		{

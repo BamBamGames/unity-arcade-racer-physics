@@ -23,6 +23,7 @@ namespace ModularCar
 		public bool debug = true;
 		public float currentSpeed;
 		public float slidingAngle;
+		public CarState state = CarState.DRIVE;
 
 		public float wheelPower = 1;
 
@@ -34,9 +35,14 @@ namespace ModularCar
 		public Rigidbody rb;
 		public Suspension suspension;
 		public Friction friction;
+		public Drift drift;
 		public CameraController cameraController;
 		public Vector3 something;
 		public Quaternion somethingElse;
+
+		public List<Damper> dampers;
+
+		public float horizontalInput;
 
 		void Awake()
 		{
@@ -56,7 +62,8 @@ namespace ModularCar
 			cameraController = GameObject.Find("CarCamera").GetComponent<CameraController>();
 
 			suspension = transform.GetComponent<Suspension>();
-			friction = transform.GetComponent<Friction>(); ;
+			friction = transform.GetComponent<Friction>();
+			drift = transform.GetComponent<Drift>();
 
 			something = rb.inertiaTensor;
 			somethingElse = rb.inertiaTensorRotation;
@@ -69,9 +76,6 @@ namespace ModularCar
 
 		void FixedUpdate()
 		{
-			currentSpeed = transform.InverseTransformDirection(rb.velocity).z;
-
-			WheelPower();
 			Downforce();
 			something = rb.inertiaTensor;
 
@@ -83,10 +87,23 @@ namespace ModularCar
 			}
 		}
 
-		
-		private void WheelPower()
+		private void Update()
 		{
-			wheelPower = 0;
+			currentSpeed = GetSpeed();
+			wheelPower = WheelPower();
+
+			if (dampers != null && dampers.Count > 1)
+			{
+				foreach (var damper in dampers)
+				{
+					damper.Damp();
+				}
+			}
+		}
+
+		private float WheelPower()
+		{
+			float power = 0;
 			for (int i = 0; i < wheels.Count; i++)
 			{
 				if (debug)
@@ -94,7 +111,7 @@ namespace ModularCar
 
 				if (wheels[i].IsGrounded())
 				{
-					wheelPower += .25f;
+					power += .25f;
 				}
 
 				//if (Physics.Raycast(wheels[i].transform.position + (rb.velocity * Time.deltaTime), -wheels[i].transform.up, out RaycastHit hit, wheelRadius))
@@ -108,11 +125,18 @@ namespace ModularCar
 				//	wheelPower += .25f;
 				//}
 			}
+
+			return power;
 		}
 		
 		private void Downforce()
 		{
 			rb.AddForce(-transform.up * downforce * currentSpeed);
+		}
+
+		private float GetSpeed()
+		{
+			return transform.InverseTransformDirection(rb.velocity).z;
 		}
 
 		private void Grip()

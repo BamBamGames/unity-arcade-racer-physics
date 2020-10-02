@@ -16,8 +16,8 @@ namespace ModularCar
 		private TrailRenderer skid;
 		private Vector3 hitPosition;
 		public float maxSlideAngle = .1f;
-		public float slideAngle;
-		public float debug;
+		public float minimumSlideSpeed = 10;
+		private float slideAngle;
 
 		private void Start()
 		{
@@ -41,9 +41,6 @@ namespace ModularCar
 			RotateWheels();
 			Sliding();
 			Skidmarks();
-
-			var rbDirection = rb.velocity.normalized;
-			debug = Mathf.Deg2Rad * (Vector3.Angle(rbDirection, transform.forward.normalized) - 90);
 		}
 
 		private void FixedUpdate()
@@ -53,6 +50,7 @@ namespace ModularCar
 
 		public bool IsGrounded()
 		{
+			//Need to update hit position every frame, otherwise it leads to some weirdness
 			if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, radius + maxSuspensionLength))
 			{
 				hitPosition = hit.point + (.05f * transform.up);
@@ -72,7 +70,7 @@ namespace ModularCar
 
 		private void Skidmarks()
 		{
-			skid.emitting = IsGrounded() && IsSliding();
+			skid.emitting = IsGrounded() && IsSliding() && control.currentSpeed > 10;
 			skid.transform.position = hitPosition;
 		}
 

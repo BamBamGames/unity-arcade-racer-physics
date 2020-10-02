@@ -976,8 +976,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 0}
   maxSlideAngle: 0.1
-  slideAngle: 0
-  debug: 0
+  minimumSlideSpeed: 10
 --- !u!1 &846709164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1674,8 +1673,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 0}
   maxSlideAngle: 0.1
-  slideAngle: 0
-  debug: 0
+  minimumSlideSpeed: 10
 --- !u!1 &1690999759
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,8 +1721,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 0}
   maxSlideAngle: 0.1
-  slideAngle: 0
-  debug: 0
+  minimumSlideSpeed: 10
 --- !u!1 &1757849826
 GameObject:
   m_ObjectHideFlags: 0
@@ -1737,6 +1734,7 @@ GameObject:
   - component: {fileID: 1757849828}
   - component: {fileID: 1757849833}
   - component: {fileID: 1757849834}
+  - component: {fileID: 1757849827}
   - component: {fileID: 1757849836}
   - component: {fileID: 1757849835}
   - component: {fileID: 1757849830}
@@ -1748,6 +1746,34 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1757849827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1757849826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9480cd4da8300d24283c9c750fe9d297, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputThreshold: 0.01
+  minDriftSpeed: 20
+  driftStrength: 0.5
+  driftOffset: 1
+  visualDriftOffsetVisualMultipler: 10
+  driftEnableSpeed: 0.5
+  driftCancelSpeed: 0.5
+  driftCancelHorizontalInput: 0.5
+  limitedHorizontalChangeRate: 10
+  limitedHorizontalChangeRateDrift: 3
+  normalTraction: 15
+  driftTraction: 1
+  normalCameraRotation: 8
+  driftCameraRotation: 2
+  debug: 1
+  _driftChangeSpeed: 0
 --- !u!54 &1757849828
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1812,7 +1838,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d072be4dc51342449efa6660670e4f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sidewaysTraction: 15
   rollingResistance: 0.4
 --- !u!114 &1757849833
 MonoBehaviour:
@@ -1834,6 +1859,7 @@ MonoBehaviour:
   debug: 1
   currentSpeed: 0
   slidingAngle: 0
+  state: 0
   wheelPower: 1
   visualMesh: {fileID: 0}
   wheels: []
@@ -1841,9 +1867,11 @@ MonoBehaviour:
   rb: {fileID: 0}
   suspension: {fileID: 0}
   friction: {fileID: 0}
+  drift: {fileID: 0}
   cameraController: {fileID: 0}
   something: {x: 0, y: 0, z: 0}
   somethingElse: {x: 0, y: 0, z: 0, w: 0}
+  horizontalInput: 0
 --- !u!114 &1757849834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1869,7 +1897,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 823b7717c40a1be45a632178582d3737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
   steeringCurve:
     serializedVersion: 2
     m_Curve:
@@ -1897,27 +1924,8 @@ MonoBehaviour:
   fullTurnSpeed: 5
   steerPower: 15
   angularTraction: 15
-  inputThreshold: 0.01
-  minDriftSpeed: 5
-  driftStrength: 0.5
-  driftStrengthVisualMultipler: 12
-  driftOffset: 1
-  visualDriftOffsetVisualMultipler: 10
-  driftEnableSpeed: 0.5
-  driftCancelSpeed: 0.5
-  driftCancelHorizontalInput: 0.5
-  limitedHorizontalChangeRate: 20
-  limitedHorizontalChangeRateDrift: 3
   forceMode: 5
-  debug: 1
-  horizontalInput: 0
-  _dampDriftOffset: 0
-  _dampDriftStrength: 1
-  _dampVisualHorizontalMultipler: 0
-  slidingAngle: 0
   turningPower: 0
-  _dampFriction: 0
-  _dampCameraRotation: 0
 --- !u!114 &1757849836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2001,8 +2009,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mesh: {fileID: 0}
   maxSlideAngle: 0.1
-  slideAngle: 0
-  debug: 0
+  minimumSlideSpeed: 10
 --- !u!1 &1866513593
 GameObject:
   m_ObjectHideFlags: 0
